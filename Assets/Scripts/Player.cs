@@ -82,7 +82,7 @@ public class Player : MovingObject
         // Application.LoadLevel(Application.loadedLevel);
     }
 
-    private void LoserFood(int loss)
+    public void LoseFood(int loss)
     {
         playerAnimator.SetTrigger("playerHit");
         food -= loss;
