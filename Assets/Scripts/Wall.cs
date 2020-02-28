@@ -23,6 +23,7 @@ public class Wall : MonoBehaviour
     {
         spriteRenderer.sprite = damageSprite;
         hp -= loss;
+
         if (hp <= 0)
             gameObject.SetActive(false);
        

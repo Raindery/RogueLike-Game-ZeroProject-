@@ -5,9 +5,14 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance = null;
+    [HideInInspector] public bool playersTurn = true;
+    public int playerFoodCount = 100;
 
     [SerializeField] private BoardManager boardScript;
-    private int level = 3;
+    [SerializeField] private int level = 3;
+
+    
+    
 
     void Awake()
     {
@@ -24,6 +29,11 @@ public class GameManager : MonoBehaviour
     private void InitGame()
     {
         boardScript.SetupScene(level);
+    }
+
+    public void GameOver()
+    {
+        enabled = false;
     }
 
     // Update is called once per frame
