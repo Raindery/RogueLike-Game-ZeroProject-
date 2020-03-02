@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,10 +11,17 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public bool playersTurn = true;
     public int playerFoodCount = 100;
 
-    [SerializeField] private BoardManager boardScript;
-    [SerializeField] private int level = 3;
+
+    
+    
+    [SerializeField] private int level = 1;
     private List<Enemy> enemies;
     private bool enemiesMoving;
+    private bool doingSetup;
+    private float levelStartDelay = 2f;
+    private BoardManager boardScript;
+    private Text levelText;
+    private GameObject levelImage;
 
     
     
@@ -30,21 +39,51 @@ public class GameManager : MonoBehaviour
         InitGame();
     }
 
+
+
+
+
+
+    private void OnLevelWasLoaded(int level)
+    {
+        this.level++;
+
+        InitGame();
+    }
+
     private void InitGame()
     {
+        doingSetup = true;
+
+        levelImage = GameObject.Find("LevelImage");
+        levelText = GameObject.Find("LevelText").GetComponent<Text>();
+
+        levelText.text = "Day " + level;
+        levelImage.SetActive(true);
+        Invoke("HideLevelImage", levelStartDelay);
+
         enemies.Clear();
         boardScript.SetupScene(level);
     }
 
+    private void HideLevelImage()
+    {
+        levelImage.SetActive(false);
+        doingSetup = false;
+    }
+
     public void GameOver()
     {
+        levelText.text = $"After {level-1} days, you STARVED.";
+        levelImage.SetActive(true);
+
         enabled = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (enemiesMoving || playersTurn)
+        if (enemiesMoving || playersTurn || doingSetup)
             return;
 
         StartCoroutine(MoveEnemies());
@@ -54,6 +93,8 @@ public class GameManager : MonoBehaviour
     {
         enemies.Add(script);
     }
+
+    
 
 
     private IEnumerator MoveEnemies()

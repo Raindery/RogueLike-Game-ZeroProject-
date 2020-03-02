@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Player : MovingObject
 {
@@ -9,6 +10,7 @@ public class Player : MovingObject
     public int pointsPerSoda = 20;
     public int pointsPerFood = 10;
     public float restartLevelDelay = 1f;
+    public Text foodText;
 
     private Animator playerAnimator;
     private int food;
@@ -20,6 +22,8 @@ public class Player : MovingObject
         playerAnimator = GetComponent<Animator>();
 
         food = GameManager.instance.playerFoodCount;
+
+        foodText.text = $"Food: {food}";
 
         base.Start();
     }
@@ -51,19 +55,25 @@ public class Player : MovingObject
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "Exit")
+        if(collision.CompareTag("Exit"))
         {
             Invoke("Restart", restartLevelDelay);
             enabled = false;
         }
-        else if (collision.tag == "Food")
+        else if (collision.CompareTag("Food"))
         {
             food += pointsPerFood;
+
+            foodText.text = $"+ {pointsPerFood} Food: {food}";
+
             collision.gameObject.SetActive(false);
         }
-        else if(collision.tag == "Soda")
+        else if(collision.CompareTag("Soda"))
         {
             food += pointsPerSoda;
+
+            foodText.text = $"+ {pointsPerSoda} Food: {food}";
+
             collision.gameObject.SetActive(false);
         }
 
@@ -79,13 +89,16 @@ public class Player : MovingObject
     private void Restart()
     {
         SceneManager.LoadScene(0);
-        // Application.LoadLevel(Application.loadedLevel);
+       
     }
 
     public void LoseFood(int loss)
     {
         playerAnimator.SetTrigger("playerHit");
         food -= loss;
+
+        foodText.text = $"- {loss} Food: {food}";
+
         CheckGameOver();
     }
 
@@ -94,9 +107,17 @@ public class Player : MovingObject
     protected override void AttemptMove<T>(int xDir, int yDir)
     {
         food--;
+
+        foodText.text = $"Food: {food}";
+
         base.AttemptMove<T>(xDir, yDir);
 
         RaycastHit2D hit;
+
+        if(Move(xDir, yDir, out hit))
+        {
+
+        }
 
         CheckGameOver();
 

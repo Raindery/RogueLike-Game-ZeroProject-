@@ -42,7 +42,7 @@ public class Enemy : MovingObject
         else
             xDir = target.position.x > transform.position.x ? 1 : -1;
 
-        AttemptMove<Enemy>(xDir, yDir);
+        AttemptMove<Player>(xDir, yDir);
     }
 
     protected override void OnCantMove<T>(T component)
