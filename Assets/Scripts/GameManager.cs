@@ -77,6 +77,8 @@ public class GameManager : MonoBehaviour
         levelText.text = $"After {level-1} days, you STARVED.";
         levelImage.SetActive(true);
 
+        
+
         enabled = false;
     }
 
